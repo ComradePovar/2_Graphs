@@ -7,14 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OxyPlot.Series;
+using OxyPlot;
 
 namespace _2_Graphs
 {
-    public partial class Form1 : Form
+    public partial class Graph : Form
     {
-        public Form1()
+        PlotModel model;
+
+        public Graph()
         {
             InitializeComponent();
+            model = new PlotModel()
+            {
+                LegendPlacement = LegendPlacement.Outside
+            };
+            
+            model.Series.Add()
         }
     }
 }
