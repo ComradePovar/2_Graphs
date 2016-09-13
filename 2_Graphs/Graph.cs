@@ -14,17 +14,22 @@ namespace _2_Graphs
 {
     public partial class Graph : Form
     {
-        PlotModel model;
+        private PlotModel model;
+        private LagrangePolynomial polynomial;
+        private const double incrementX = 0.00001;
 
         public Graph()
         {
             InitializeComponent();
+            polynomial = new LagrangePolynomial(x => Math.Log(1 + x * x) / (1 + x * x), 0, 2);
             model = new PlotModel()
             {
                 LegendPlacement = LegendPlacement.Outside
             };
-            
-            model.Series.Add()
+
+            model.Series.Add(new FunctionSeries(x => Math.Log(1 + x * x) / (1 + x * x), polynomial.LowerBound,
+                polynomial.UpperBound, incrementX, "ln(1 + x^2)/(1+x^2)"));
+            plot.Model = model;
         }
     }
 }

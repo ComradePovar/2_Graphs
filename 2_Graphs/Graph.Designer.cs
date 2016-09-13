@@ -38,7 +38,7 @@
             this.plot.MaximumSize = new System.Drawing.Size(800, 400);
             this.plot.Name = "plot";
             this.plot.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plot.Size = new System.Drawing.Size(800, 400);
+            this.plot.Size = new System.Drawing.Size(784, 400);
             this.plot.TabIndex = 0;
             this.plot.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plot.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -49,6 +49,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 461);
+            this.Controls.Add(this.plot);
+            this.MaximumSize = new System.Drawing.Size(800, 500);
+            this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "Graph";
             this.Text = "Graph";
             this.ResumeLayout(false);
