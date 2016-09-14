@@ -17,11 +17,13 @@ namespace _2_Graphs
         private PlotModel model;
         private LagrangePolynomial polynomial;
         private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
+        private double lowerBound = 0;
+        private double upperBound = 2;
 
         public Graph()
         {
             InitializeComponent();
-            polynomial = new LagrangePolynomial(f, 0, 2);
+            polynomial = new LagrangePolynomial(f, lowerBound, upperBound);
             model = new PlotModel()
             {
                 LegendPlacement = LegendPlacement.Outside
