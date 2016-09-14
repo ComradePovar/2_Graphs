@@ -44,7 +44,6 @@ namespace _2_Graphs
             }
 
             double segmentLength = (polynomial.UpperBound-polynomial.LowerBound) / polynomial.Degree;
-            model.Series.Clear();
             SetInterpolationPoints(segmentLength);
             PlotGraphs(segmentLength, M);
         }
@@ -60,29 +59,20 @@ namespace _2_Graphs
         }
         private void SetInterpolationPoints(double segmentLength)
         {
-            ScatterSeries coloredPoints = new ScatterSeries
-            {
-                MarkerFill = OxyColors.DarkGreen,
-                MarkerType = MarkerType.Circle,
-                MarkerSize = 4,
-                Title = "Узлы интерполяции"
-            };
             double[] interPoints = new double[polynomial.Degree + 1];
             for (int i = 0; i < interPoints.Length; i++)
             {
                 interPoints[i] = segmentLength * i;
-                coloredPoints.Points.Add(new ScatterPoint(interPoints[i], f(interPoints[i])));
             }
             polynomial.InterPoints = interPoints;
-            model.Series.Add(coloredPoints);
         }
         private void PlotGraphs(double segmentLength, int M)
         {
+            model.Series.Clear();
             model.Series.Add(new FunctionSeries(f, polynomial.LowerBound,
                 polynomial.UpperBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
             model.Series.Add(new FunctionSeries(polynomial.InterpolatePolynomial, polynomial.LowerBound,
                 polynomial.UpperBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
-        
             plot.Model = model;
             plot.InvalidatePlot(true);
         }
