@@ -12,7 +12,6 @@ namespace _2_Graphs
         public double UpperBound { get; set; }
 
         public double[] FuncValues { get; private set; }
-        public double X { get; set; }
         public double[] InterPoints { get; set; }
         public int Degree { get; set; }
         private Func<double, double> f;
