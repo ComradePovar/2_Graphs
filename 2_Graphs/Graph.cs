@@ -16,7 +16,6 @@ namespace _2_Graphs
     {
         private PlotModel model;
         private LagrangePolynomial polynomial;
-        private const double incrementX = 0.00001;
 
         public Graph()
         {
@@ -27,20 +26,17 @@ namespace _2_Graphs
                 LegendPlacement = LegendPlacement.Outside
             };
 
-            model.Series.Add(new FunctionSeries(x => Math.Log(1 + x * x) / (1 + x * x), polynomial.LowerBound,
-                polynomial.UpperBound, incrementX, "ln(1 + x^2)/(1+x^2)"));
-            plot.Model = model;
         }
 
         private void btnDraw_Click(object sender, EventArgs e)
         {
             int segmentCount, M;
-            if (!Int32.TryParse(tbN.Text, out segmentCount))
+            if (!Int32.TryParse(tbN.Text, out segmentCount) && segmentCount > 0)
             {
                 MessageBox.Show("Неверное значение количества отрезков.");
                 return;
             }
-            if (!Int32.TryParse(tbM.Text, out M))
+            if (!Int32.TryParse(tbM.Text, out M) && M > 0)
             {
                 MessageBox.Show("Неверное значение параметра M.");
                 return;
@@ -55,10 +51,14 @@ namespace _2_Graphs
             }
             polynomial.InterPoints = interPoints;
 
-            if (model.Series.Count > 3)
-                model.Series.RemoveAt(1);
+            if (model.Series.Count > 1)
+            {
+                model.Series.Clear();
+            }
+            model.Series.Add(new FunctionSeries(x => Math.Log(1 + x * x) / (1 + x * x), polynomial.LowerBound,
+                polynomial.UpperBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
             model.Series.Add(new FunctionSeries(polynomial.InterpolatePolynomial, polynomial.LowerBound,
-                polynomial.UpperBound, segmentLength, $"Многочлен Лагранжа степени {polynomial.Degree}"));
+                polynomial.UpperBound, segmentLength/ M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
             plot.Model = model;
             plot.InvalidatePlot(true);
         }
