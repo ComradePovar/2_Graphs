@@ -16,49 +16,61 @@ namespace _2_Graphs
     {
         private PlotModel model;
         private LagrangePolynomial polynomial;
+        private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
 
         public Graph()
         {
             InitializeComponent();
-            polynomial = new LagrangePolynomial(x => Math.Log(1 + x * x) / (1 + x * x), 0, 2);
+            polynomial = new LagrangePolynomial(f, 0, 2);
             model = new PlotModel()
             {
                 LegendPlacement = LegendPlacement.Outside
             };
 
         }
-
         private void btnDraw_Click(object sender, EventArgs e)
         {
-            int segmentCount, M;
-            if (!Int32.TryParse(tbN.Text, out segmentCount) && segmentCount > 0)
+            int M;
+            try
             {
-                MessageBox.Show("Неверное значение количества отрезков.");
-                return;
+                polynomial.Degree = GetValue(tbN);
+                M = GetValue(tbM);
             }
-            if (!Int32.TryParse(tbM.Text, out M) && M > 0)
+            catch (ArgumentException)
             {
-                MessageBox.Show("Неверное значение параметра M.");
                 return;
             }
 
-            polynomial.Degree = segmentCount;
-            double segmentLength = (polynomial.UpperBound-polynomial.LowerBound) / segmentCount;
+            double segmentLength = (polynomial.UpperBound-polynomial.LowerBound) / polynomial.Degree;
+            SetInterpolationPoints(segmentLength);
+            PlotGraphs(segmentLength, M);
+        }
+        private int GetValue(TextBox tb)
+        {
+            int value;
+            if (!Int32.TryParse(tb.Text, out value) && value > 0)
+            {
+                MessageBox.Show("Неверное значение параметра M.");
+                throw new ArgumentException();
+            }
+            return value;
+        }
+        private void SetInterpolationPoints(double segmentLength)
+        {
             double[] interPoints = new double[polynomial.Degree + 1];
             for (int i = 0; i < interPoints.Length; i++)
             {
                 interPoints[i] = segmentLength * i;
             }
             polynomial.InterPoints = interPoints;
-
-            if (model.Series.Count > 1)
-            {
-                model.Series.Clear();
-            }
-            model.Series.Add(new FunctionSeries(x => Math.Log(1 + x * x) / (1 + x * x), polynomial.LowerBound,
+        }
+        private void PlotGraphs(double segmentLength, int M)
+        {
+            model.Series.Clear();
+            model.Series.Add(new FunctionSeries(f, polynomial.LowerBound,
                 polynomial.UpperBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
             model.Series.Add(new FunctionSeries(polynomial.InterpolatePolynomial, polynomial.LowerBound,
-                polynomial.UpperBound, segmentLength/ M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
+                polynomial.UpperBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
             plot.Model = model;
             plot.InvalidatePlot(true);
         }
