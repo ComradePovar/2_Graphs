@@ -24,7 +24,12 @@ namespace _2_Graphs
         public Graph()
         {
             InitializeComponent();
-            polynomial = new LagrangePolynomial(f, lowerBound, upperBound);
+            polynomial = new LagrangePolynomial()
+            {
+                Function = f,
+                LowerFunctionBound = lowerBound,
+                UpperFunctionBound = upperBound
+            };
             model = new PlotModel()
             {
                 LegendPlacement = LegendPlacement.Outside
@@ -33,10 +38,10 @@ namespace _2_Graphs
         }
         private void btnDraw_Click(object sender, EventArgs e)
         {
-            int M;
+            int M, segmentCount;
             try
             {
-                polynomial.Degree = GetValue(tbN);
+                segmentCount = GetValue(tbN);
                 M = GetValue(tbM);
             }
             catch (ArgumentException)
@@ -44,9 +49,9 @@ namespace _2_Graphs
                 return;
             }
 
-            double segmentLength = (polynomial.UpperBound-polynomial.LowerBound) / polynomial.Degree;
+            double segmentLength = (polynomial.UpperFunctionBound - polynomial.LowerFunctionBound) / segmentCount;
             model.Series.Clear();
-            SetInterpolationPoints(segmentLength);
+            SetInterpolationPoints(segmentLength, segmentCount);
             PlotGraphs(segmentLength, M);
         }
         private int GetValue(TextBox tb)
@@ -59,7 +64,7 @@ namespace _2_Graphs
             }
             return value;
         }
-        private void SetInterpolationPoints(double segmentLength)
+        private void SetInterpolationPoints(double segmentLength, int segmentCount)
         {
             ScatterSeries coloredPoints = new ScatterSeries
             {
@@ -68,7 +73,8 @@ namespace _2_Graphs
                 MarkerSize = 4,
                 Title = "Узлы интерполяции"
             };
-            double[] interPoints = new double[polynomial.Degree + 1];
+
+            double[] interPoints = new double[segmentCount + 1];
             for (int i = 0; i < interPoints.Length; i++)
             {
                 interPoints[i] = segmentLength * i;
@@ -79,10 +85,10 @@ namespace _2_Graphs
         }
         private void PlotGraphs(double segmentLength, int M)
         {
-            model.Series.Add(new FunctionSeries(f, polynomial.LowerBound,
-                polynomial.UpperBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
-            model.Series.Add(new FunctionSeries(polynomial.InterpolatePolynomial, polynomial.LowerBound,
-                polynomial.UpperBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
+            model.Series.Add(new FunctionSeries(f, polynomial.LowerFunctionBound,
+                polynomial.UpperFunctionBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
+            model.Series.Add(new FunctionSeries(polynomial.GetPolynomialValue, polynomial.LowerFunctionBound,
+                polynomial.UpperFunctionBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
         
             plot.Model = model;
             plot.InvalidatePlot(true);

@@ -1,38 +1,83 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _2_Graphs
 {
-    class LagrangePolynomial
+    abstract class Function
     {
-        public double LowerBound { get; set; }
-        public double UpperBound { get; set; }
+        public double LowerFunctionBound { get; set; } = Double.MinValue;
+        public double UpperFunctionBound { get; set; } = Double.MaxValue;
+        protected Func<double, double> function;
 
-        public double[] FuncValues { get; private set; }
-        public double[] InterPoints { get; set; }
-        public int Degree { get; set; }
-        private Func<double, double> f;
+    }
+    abstract class PolynomialInterpolation : Function
+    {
+        public int Degree { get; protected set; }
+
+        protected double[] funcValues;
+        protected double[] interPoints;
+
+        public abstract double GetPolynomialValue(double arg);
+    }
+    class LagrangePolynomial : PolynomialInterpolation
+    {
+        public double[] FuncValues
+        {
+            get
+            {
+                return funcValues;
+            }
+            set
+            {
+                funcValues = value;
+                Degree = funcValues.Length - 1;
+            }
+        }
+        public double[] InterPoints
+        {
+            get
+            {
+                return interPoints;
+            }
+            set
+            {
+                interPoints = value;
+                Degree = interPoints.Length - 1;
+                if (function != null)
+                {
+                    FuncValues = new double[interPoints.Length];
+                    for (int i = 0; i < interPoints.Length; i++)
+                        FuncValues[i] = function(interPoints[i]);
+                }                    
+            }
+        }
+        public Func<double, double> Function
+        {
+            get
+            {
+                return function;
+            }
+            set
+            {
+                function = value;
+                if (InterPoints != null)
+                    for (int i = 0; i < FuncValues.Length; i++)
+                        FuncValues[i] = function(InterPoints[i]);
+            }
+        }
 
         public LagrangePolynomial() { }
-        public LagrangePolynomial(Func<double, double> function, double lowerBound, double upperBound)
+        public override double GetPolynomialValue(double arg)
         {
-            LowerBound = lowerBound;
-            UpperBound = upperBound;
-            f = function;
-        }
-        public LagrangePolynomial(int degree, double[] interPoints)
-        {
-            Degree = degree;
-            InterPoints = interPoints;
-        }
-        public double InterpolatePolynomial(double x)
-        {
-            FuncValues = new double[Degree + 1];
-            for (int i = 0; i < FuncValues.Length; i++)
-                FuncValues[i] = f(InterPoints[i]);
+            if (FuncValues == null)
+            {
+                if (Degree == 0)
+                    throw new MissingMemberException("We require more vespen gas.");
+                FuncValues = new double[Degree + 1];
+                for (int i = 0; i < FuncValues.Length; i++)
+                    FuncValues[i] = function(InterPoints[i]);
+            }
+            if (InterPoints == null)
+                throw new MissingMemberException("We require more minerals.");
 
             double p = 0;
             for (int i = 0; i < FuncValues.Length; i++)
@@ -42,7 +87,7 @@ namespace _2_Graphs
                 {
                     if (i == j)
                         continue;
-                    l *= (x - InterPoints[j]) / (InterPoints[i] - InterPoints[j]);
+                    l *= (arg - InterPoints[j]) / (InterPoints[i] - InterPoints[j]);
                 }
                 p += FuncValues[i] * l;
             }
