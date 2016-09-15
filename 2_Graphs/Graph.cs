@@ -1,4 +1,8 @@
-﻿using OxyPlot.Axes;
+﻿/* TODO
+ * Определить степень при которой достигается максимальное значение погрешности
+ * минимальное значение погрешности
+ * сделать вывод
+ * */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -128,7 +132,7 @@ namespace _2_Graphs
             double segmentLength = (polynomial.UpperFunctionBound - polynomial.LowerFunctionBound) / segmentCount;
             SetInterpolationPoints(segmentLength, segmentCount);
             double k = segmentLength / M;
-            errors = new double[(int)(2 / k)];
+            errors = new double[(int)(2 / k) + 1];
             for (int i = 0; i < errors.Length; i++)
             {
                 errors[i] = f(i * k);
