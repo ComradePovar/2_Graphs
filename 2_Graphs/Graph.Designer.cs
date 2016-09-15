@@ -30,11 +30,11 @@
         {
             this.plot = new OxyPlot.WindowsForms.PlotView();
             this.grpBox = new System.Windows.Forms.GroupBox();
-            this.tbN = new System.Windows.Forms.TextBox();
-            this.lbN = new System.Windows.Forms.Label();
-            this.lbM = new System.Windows.Forms.Label();
-            this.tbM = new System.Windows.Forms.TextBox();
             this.btnDraw = new System.Windows.Forms.Button();
+            this.tbM = new System.Windows.Forms.TextBox();
+            this.lbM = new System.Windows.Forms.Label();
+            this.lbN = new System.Windows.Forms.Label();
+            this.tbN = new System.Windows.Forms.TextBox();
             this.grpBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -64,21 +64,23 @@
             this.grpBox.TabIndex = 1;
             this.grpBox.TabStop = false;
             // 
-            // tbN
+            // btnDraw
             // 
-            this.tbN.Location = new System.Drawing.Point(170, 17);
-            this.tbN.Name = "tbN";
-            this.tbN.Size = new System.Drawing.Size(59, 20);
-            this.tbN.TabIndex = 0;
+            this.btnDraw.Location = new System.Drawing.Point(655, 17);
+            this.btnDraw.Name = "btnDraw";
+            this.btnDraw.Size = new System.Drawing.Size(104, 26);
+            this.btnDraw.TabIndex = 4;
+            this.btnDraw.Text = "Начертить";
+            this.btnDraw.UseVisualStyleBackColor = true;
+            this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
             // 
-            // lbN
+            // tbM
             // 
-            this.lbN.AutoSize = true;
-            this.lbN.Location = new System.Drawing.Point(6, 20);
-            this.lbN.Name = "lbN";
-            this.lbN.Size = new System.Drawing.Size(158, 13);
-            this.lbN.TabIndex = 1;
-            this.lbN.Text = "Число частичных отрезков N:";
+            this.tbM.Location = new System.Drawing.Point(314, 17);
+            this.tbM.Name = "tbM";
+            this.tbM.Size = new System.Drawing.Size(59, 20);
+            this.tbM.TabIndex = 3;
+            this.tbM.Tag = "M";
             // 
             // lbM
             // 
@@ -89,22 +91,22 @@
             this.lbM.TabIndex = 2;
             this.lbM.Text = "Параметр M:";
             // 
-            // tbM
+            // lbN
             // 
-            this.tbM.Location = new System.Drawing.Point(314, 17);
-            this.tbM.Name = "tbM";
-            this.tbM.Size = new System.Drawing.Size(59, 20);
-            this.tbM.TabIndex = 3;
+            this.lbN.AutoSize = true;
+            this.lbN.Location = new System.Drawing.Point(6, 20);
+            this.lbN.Name = "lbN";
+            this.lbN.Size = new System.Drawing.Size(158, 13);
+            this.lbN.TabIndex = 1;
+            this.lbN.Text = "Число частичных отрезков N:";
             // 
-            // btnDraw
+            // tbN
             // 
-            this.btnDraw.Location = new System.Drawing.Point(655, 17);
-            this.btnDraw.Name = "btnDraw";
-            this.btnDraw.Size = new System.Drawing.Size(104, 26);
-            this.btnDraw.TabIndex = 4;
-            this.btnDraw.Text = "Начертить";
-            this.btnDraw.UseVisualStyleBackColor = true;
-            this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
+            this.tbN.Location = new System.Drawing.Point(170, 17);
+            this.tbN.Name = "tbN";
+            this.tbN.Size = new System.Drawing.Size(59, 20);
+            this.tbN.TabIndex = 0;
+            this.tbN.Tag = "N";
             // 
             // Graph
             // 

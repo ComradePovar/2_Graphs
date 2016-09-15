@@ -51,9 +51,9 @@ namespace _2_Graphs
         private int GetValue(TextBox tb)
         {
             int value;
-            if (!Int32.TryParse(tb.Text, out value) && value > 0)
+            if (!Int32.TryParse(tb.Text, out value) || value < 1)
             {
-                MessageBox.Show("Неверное значение параметра M.");
+                MessageBox.Show($"Неверное значение параметра {tb.Tag}.");
                 throw new ArgumentException();
             }
             return value;
