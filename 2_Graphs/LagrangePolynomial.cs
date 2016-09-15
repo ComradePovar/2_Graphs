@@ -46,7 +46,10 @@ namespace _2_Graphs
                 }
                 p += FuncValues[i] * l;
             }
-
+            if (p > 0.999)
+              return 0.999;
+            if (p < -0.999)
+                return -0.999;
             return p;
         }
     }

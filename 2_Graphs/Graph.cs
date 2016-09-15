@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot.Axes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,8 +28,15 @@ namespace _2_Graphs
             model = new PlotModel()
             {
                 LegendPlacement = LegendPlacement.Outside
+                
             };
-
+            /*model.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Maximum = 1,
+                Minimum = 0,
+                
+            });*/
         }
         private void btnDraw_Click(object sender, EventArgs e)
         {
@@ -78,8 +86,10 @@ namespace _2_Graphs
         }
         private void PlotGraphs(double segmentLength, int M)
         {
+            polynomial.LowerBound = 0; polynomial.UpperBound = 2;
             model.Series.Add(new FunctionSeries(f, polynomial.LowerBound,
                 polynomial.UpperBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
+            polynomial.LowerBound = 0; polynomial.UpperBound = 2;
             model.Series.Add(new FunctionSeries(polynomial.InterpolatePolynomial, polynomial.LowerBound,
                 polynomial.UpperBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
         
