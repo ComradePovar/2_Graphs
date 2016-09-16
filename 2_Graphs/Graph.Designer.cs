@@ -1,6 +1,6 @@
 ﻿namespace _2_Graphs
 {
-    partial class Graph
+    sealed partial class Graph
     {
         /// <summary>
         /// Required designer variable.
@@ -30,12 +30,12 @@
         {
             this.plot = new OxyPlot.WindowsForms.PlotView();
             this.grpBox = new System.Windows.Forms.GroupBox();
+            this.btnError = new System.Windows.Forms.Button();
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbM = new System.Windows.Forms.TextBox();
             this.lbM = new System.Windows.Forms.Label();
             this.lbN = new System.Windows.Forms.Label();
             this.tbN = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.grpBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +54,7 @@
             // 
             // grpBox
             // 
-            this.grpBox.Controls.Add(this.button1);
+            this.grpBox.Controls.Add(this.btnError);
             this.grpBox.Controls.Add(this.btnDraw);
             this.grpBox.Controls.Add(this.tbM);
             this.grpBox.Controls.Add(this.lbM);
@@ -65,6 +65,16 @@
             this.grpBox.Size = new System.Drawing.Size(771, 43);
             this.grpBox.TabIndex = 1;
             this.grpBox.TabStop = false;
+            // 
+            // btnError
+            // 
+            this.btnError.Location = new System.Drawing.Point(499, 17);
+            this.btnError.Name = "btnError";
+            this.btnError.Size = new System.Drawing.Size(150, 26);
+            this.btnError.TabIndex = 8;
+            this.btnError.Text = "Определить погрешность";
+            this.btnError.UseVisualStyleBackColor = true;
+            this.btnError.Click += new System.EventHandler(this.btnError_Click);
             // 
             // btnDraw
             // 
@@ -110,16 +120,6 @@
             this.tbN.TabIndex = 0;
             this.tbN.Tag = "N";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(557, 20);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Graph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -127,8 +127,7 @@
             this.ClientSize = new System.Drawing.Size(784, 461);
             this.Controls.Add(this.grpBox);
             this.Controls.Add(this.plot);
-            this.MaximumSize = new System.Drawing.Size(800, 500);
-            this.MinimumSize = new System.Drawing.Size(800, 500);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Graph";
             this.Text = "Graph";
             this.grpBox.ResumeLayout(false);
@@ -146,7 +145,7 @@
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.TextBox tbM;
         private System.Windows.Forms.Label lbM;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnError;
     }
 }
 

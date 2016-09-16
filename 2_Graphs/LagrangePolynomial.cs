@@ -2,14 +2,14 @@
 
 namespace _2_Graphs
 {
-    abstract class Function
+    public abstract class Function
     {
         public double LowerFunctionBound { get; set; } = Double.MinValue;
         public double UpperFunctionBound { get; set; } = Double.MaxValue;
         protected Func<double, double> function;
 
     }
-    abstract class PolynomialInterpolation : Function
+    public abstract class PolynomialInterpolation : Function
     {
         public int Degree { get; protected set; }
 
@@ -18,7 +18,7 @@ namespace _2_Graphs
 
         public abstract double GetPolynomialValue(double arg);
     }
-    class LagrangePolynomial : PolynomialInterpolation
+    public class LagrangePolynomial : PolynomialInterpolation
     {
         public double[] FuncValues
         {
