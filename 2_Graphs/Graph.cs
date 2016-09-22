@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using OxyPlot.Series;
 using OxyPlot;
+using OxyPlot.Axes;
 
 namespace _2_Graphs
 {
@@ -82,6 +83,13 @@ namespace _2_Graphs
                 polynomial.UpperFunctionBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
             model.Series.Add(new FunctionSeries(polynomial.GetPolynomialValue, polynomial.LowerFunctionBound,
                 polynomial.UpperFunctionBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
+            LinearAxis ax = new LinearAxis()
+            {
+                FilterMaxValue = 1,
+                FilterMinValue = -1
+            };
+            model.Axes.Clear();
+            model.Axes.Add(ax);
             plot.Model = model;
             plot.InvalidatePlot(true);
         }
