@@ -3,6 +3,9 @@ using System.Linq;
 using System.Windows.Forms;
 using OxyPlot;
 using OxyPlot.Series;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace _2_Graphs
 {
@@ -10,7 +13,6 @@ namespace _2_Graphs
     {
         private LagrangePolynomial polynomial;
         private PlotModel model;
-
         private int M;
 
         public Errors()
@@ -28,23 +30,51 @@ namespace _2_Graphs
             this.M = M;
             this.polynomial = polynomial;
         }
-        private void btnDraw_Click(object sender, EventArgs e)
-        {
-            int minDegree, maxDegree;
+        private async void btnDraw_Click(object sender, EventArgs e)
+        {            
             try
             {
-                minDegree = GetValue(tbMin);
-                maxDegree = GetValue(tbMax);
+                btnDraw.Enabled = false;
+                int minDegree = GetValue(tbMin);
+                int maxDegree = GetValue(tbMax);
                 if (maxDegree < minDegree)
                     throw new ArgumentException("Минимальная степень многочлена должна быть меньше максимальной.");
+                model.Series.Clear();
+                await Task.Run(() => CalculateAndPlot(minDegree, maxDegree));
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-
-            model.Series.Clear();
+            finally
+            {
+                btnDraw.Enabled = true;
+            }
+        }
+        private int GetValue(TextBox tb)
+        {
+            int value;
+            if (!Int32.TryParse(tb.Text, out value) || value < 1)
+            {
+                throw new ArgumentException($"Неверное значение {tb.Tag}.");
+            }
+            return value;
+        }
+        public delegate void ChangeUI(string data);
+        private void PlotErrorGraph(int minDegree, int maxDegree, double[] errors)
+        {
+            model.Series.Insert(0, new FunctionSeries(x => errors[(int)x - minDegree], minDegree, maxDegree, maxDegree - minDegree + 1,
+                "величина погрешности")
+            {
+                Color = OxyColors.Red
+            });    
+            plot.Model = model;
+            plot.InvalidatePlot(true);
+        }
+        private Task CalculateAndPlot(int minDegree, int maxDegree)
+        {
+            var tcs = new TaskCompletionSource<object>();
             double[] maxErrors = GetMaxErrors(minDegree, maxDegree);
             int minIndex = 0;
             int maxIndex = 0;
@@ -59,25 +89,9 @@ namespace _2_Graphs
             PlotErrorGraph(minDegree, maxDegree, maxErrors);
             MessageBox.Show($"Минимальная погрешность равна {maxErrors[minIndex]} при степени полинома {minIndex + minDegree}.");
             MessageBox.Show($"Максимальная погрешность равна {maxErrors[maxIndex]} при степени полинома {maxIndex + minDegree}.");
-        }
-        private int GetValue(TextBox tb)
-        {
-            int value;
-            if (!Int32.TryParse(tb.Text, out value) || value < 1)
-            {
-                throw new ArgumentException($"Неверное значение {tb.Tag}.");
-            }
-            return value;
-        }
-        private void PlotErrorGraph(int minDegree, int maxDegree, double[] errors)
-        {
-            model.Series.Insert(0, new FunctionSeries(x => errors[(int)x - minDegree], minDegree, maxDegree, maxDegree-minDegree+1,
-                "величина погрешности")
-            {
-                Color = OxyColors.Red
-            });
-            plot.Model = model;
-            plot.InvalidatePlot(true);
+
+            tcs.SetResult(null);
+            return tcs.Task;
         }
         private double[] GetMaxErrors(int minDegree, int maxDegree)
         {

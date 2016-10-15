@@ -4,6 +4,9 @@ using System.Windows.Forms;
 using OxyPlot.Series;
 using OxyPlot;
 using OxyPlot.Axes;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace _2_Graphs
 {
@@ -49,11 +52,12 @@ namespace _2_Graphs
                 MessageBox.Show(ex.Message);
                 return;
             }
-
+            btnDraw.Enabled = false;
             double segmentLength = (polynomial.UpperFunctionBound - polynomial.LowerFunctionBound) / segmentCount;
             model.Series.Clear();
             SetInterpolationPoints(segmentLength, segmentCount);
             PlotGraphs(segmentLength, M);
+            btnDraw.Enabled = true;
         }
         private int GetValue(TextBox tb)
         {
@@ -77,7 +81,7 @@ namespace _2_Graphs
             double[] interPoints = new double[segmentCount + 1];
             for (int i = 0; i < interPoints.Length; i++)
             {
-                interPoints[i] = segmentLength * i;
+                interPoints[i] = segmentLength * i - lowerBound;
                 coloredPoints.Points.Add(new ScatterPoint(interPoints[i], f(interPoints[i])));
             }
             polynomial.InterPoints = interPoints;
@@ -96,7 +100,7 @@ namespace _2_Graphs
         {
             try
             {
-                Errors errors = new _2_Graphs.Errors(GetValue(tbM), ref polynomial);
+                Errors errors = new Errors(GetValue(tbM), ref polynomial);
                 errors.Show();
             }
             catch (ArgumentException ex)
