@@ -30,7 +30,6 @@
         {
             this.plot = new OxyPlot.WindowsForms.PlotView();
             this.grpBox = new System.Windows.Forms.GroupBox();
-            this.btnError = new System.Windows.Forms.Button();
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbM = new System.Windows.Forms.TextBox();
             this.lbM = new System.Windows.Forms.Label();
@@ -54,7 +53,6 @@
             // 
             // grpBox
             // 
-            this.grpBox.Controls.Add(this.btnError);
             this.grpBox.Controls.Add(this.btnDraw);
             this.grpBox.Controls.Add(this.tbM);
             this.grpBox.Controls.Add(this.lbM);
@@ -65,16 +63,6 @@
             this.grpBox.Size = new System.Drawing.Size(771, 43);
             this.grpBox.TabIndex = 1;
             this.grpBox.TabStop = false;
-            // 
-            // btnError
-            // 
-            this.btnError.Location = new System.Drawing.Point(499, 17);
-            this.btnError.Name = "btnError";
-            this.btnError.Size = new System.Drawing.Size(150, 26);
-            this.btnError.TabIndex = 8;
-            this.btnError.Text = "Определить погрешность";
-            this.btnError.UseVisualStyleBackColor = true;
-            this.btnError.Click += new System.EventHandler(this.btnError_Click);
             // 
             // btnDraw
             // 
@@ -145,7 +133,6 @@
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.TextBox tbM;
         private System.Windows.Forms.Label lbM;
-        private System.Windows.Forms.Button btnError;
     }
 }
 

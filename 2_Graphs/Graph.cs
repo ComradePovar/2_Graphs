@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using OxyPlot.Series;
 using OxyPlot;
 using OxyPlot.Axes;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace _2_Graphs
 {
     public partial class Graph : Form
     {
         private PlotModel model;
-        private LagrangePolynomial polynomial;
+        private NewtonPolynomial polynomial;
         private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
         private double lowerBound = 0;
         private double upperBound = 2;
@@ -21,11 +18,9 @@ namespace _2_Graphs
         public Graph()
         {
             InitializeComponent();
-            polynomial = new LagrangePolynomial()
+            polynomial = new NewtonPolynomial()
             {
-                Function = f,
-                LowerFunctionBound = lowerBound,
-                UpperFunctionBound = upperBound
+                Function = f
             };
             model = new PlotModel()
             {
@@ -34,30 +29,30 @@ namespace _2_Graphs
             };
             LinearAxis ax = new LinearAxis()
             {
-                FilterMaxValue = 1,
-                FilterMinValue = -1
+                FilterMinValue = -1,
+                FilterMaxValue = 1
             };
             model.Axes.Add(ax);
         }
         private void btnDraw_Click(object sender, EventArgs e)
         {
-            int M, segmentCount;
-            try
-            {
-                segmentCount = GetValue(tbN);
-                M = GetValue(tbM);
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-            btnDraw.Enabled = false;
-            double segmentLength = (polynomial.UpperFunctionBound - polynomial.LowerFunctionBound) / segmentCount;
-            model.Series.Clear();
-            SetInterpolationPoints(segmentLength, segmentCount);
-            PlotGraphs(segmentLength, M);
-            btnDraw.Enabled = true;
+             int M, segmentCount;
+             try
+             {
+                 segmentCount = GetValue(tbN);
+                 M = GetValue(tbM);
+             }
+             catch (ArgumentException ex)
+             {
+                 MessageBox.Show(ex.Message);
+                 return;
+             }
+             btnDraw.Enabled = false;
+             double segmentLength = (upperBound - lowerBound) / segmentCount;
+             model.Series.Clear();
+             SetInterpolationPoints(segmentLength, segmentCount);
+             PlotGraphs(segmentLength, M);
+             btnDraw.Enabled = true;
         }
         private int GetValue(TextBox tb)
         {
@@ -89,25 +84,12 @@ namespace _2_Graphs
         }
         private void PlotGraphs(double segmentLength, int M)
         {
-            model.Series.Insert(0, new FunctionSeries(f, polynomial.LowerFunctionBound,
-                polynomial.UpperFunctionBound, segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
-            model.Series.Add(new FunctionSeries(polynomial.GetPolynomialValue, polynomial.LowerFunctionBound,
-                polynomial.UpperFunctionBound, segmentLength / M, $"Многочлен Лагранжа степени {polynomial.Degree}"));
+            model.Series.Insert(0, new FunctionSeries(f, lowerBound, upperBound,
+                segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
+            model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
+                segmentLength / M, $"Многочлен Ньютона степени {polynomial.Degree}"));
             plot.Model = model;
             plot.InvalidatePlot(true);
-        }
-        private void btnError_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Errors errors = new Errors(GetValue(tbM), ref polynomial);
-                errors.Show();
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
         }
     }
 }
