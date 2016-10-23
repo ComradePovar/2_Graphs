@@ -98,12 +98,15 @@ namespace _2_Graphs
 
                 res += dividedDiff[i][0] * temp;
             }
+
+
             double maxValue = 1;
             double minValue = -1;
             if (res > maxValue)
                 return maxValue;
             if (res < minValue)
                 return minValue;
+
             return res;
         }
         public void InitPolynomial(int degree, double[] x, double[] y)

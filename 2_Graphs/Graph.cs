@@ -92,7 +92,9 @@ namespace _2_Graphs
                 plot.Model = model;
                 plot.InvalidatePlot(true);
             });
-            btnDraw.Enabled = true;
+
+            if (plot.Model.Series.Count > 2)
+                btnDraw.Enabled = true;
         }
         private async void PlotFunctionGraphAsync(double segmentLength, int M)
         {
@@ -103,6 +105,9 @@ namespace _2_Graphs
                plot.Model = model;
                plot.InvalidatePlot(true);
             });
+
+            if (plot.Model.Series.Count > 2)
+                btnDraw.Enabled = true;
         }
     }
 }
