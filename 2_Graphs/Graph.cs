@@ -29,7 +29,7 @@ namespace _2_Graphs
             };
             LinearAxis ax = new LinearAxis()
             {
-                FilterMinValue = -1,
+                FilterMinValue = 1,
                 FilterMaxValue = 1
             };
             //model.Axes.Add(ax);
@@ -66,22 +66,33 @@ namespace _2_Graphs
         }
         private void SetInterpolationPoints(double segmentLength, int segmentCount)
         {
-            ScatterSeries coloredPoints = new ScatterSeries
-            {
-                MarkerFill = OxyColors.DarkGreen,
-                MarkerType = MarkerType.Circle,
-                MarkerSize = 3,
-                Title = "Узлы интерполяции"
-            };
-
             double[] interPoints = new double[segmentCount + 1];
-            for (int i = 0; i < interPoints.Length; i++)
+            if (segmentCount < 50)
             {
-                interPoints[i] = segmentLength * i - lowerBound;
-                coloredPoints.Points.Add(new ScatterPoint(interPoints[i], f(interPoints[i])));
+                ScatterSeries coloredPoints = new ScatterSeries
+                {
+                    MarkerFill = OxyColors.DarkGreen,
+                    MarkerType = MarkerType.Circle,
+                    MarkerSize = 3,
+                    Title = "Узлы интерполяции"
+                };
+
+                for (int i = 0; i < interPoints.Length; i++)
+                {
+                    interPoints[i] = segmentLength * i - lowerBound;
+                    coloredPoints.Points.Add(new ScatterPoint(interPoints[i], f(interPoints[i])));
+                }
+
+                model.Series.Add(coloredPoints);
             }
-            polynomial.InterPoints = interPoints;
-            model.Series.Add(coloredPoints);
+            else
+            {
+                for (int i = 0; i < interPoints.Length; i++)
+                {
+                    interPoints[i] = segmentLength * i - lowerBound;
+                }
+            }
+            polynomial.InterPoints = interPoints;                
         }
         private async void PlotPolynomialGraphAsync(double segmentLength, int M)
         {
@@ -92,9 +103,6 @@ namespace _2_Graphs
                 plot.Model = model;
                 plot.InvalidatePlot(true);
             });
-
-            if (plot.Model.Series.Count > 2)
-                btnDraw.Enabled = true;
         }
         private async void PlotFunctionGraphAsync(double segmentLength, int M)
         {
@@ -106,8 +114,7 @@ namespace _2_Graphs
                plot.InvalidatePlot(true);
             });
 
-            if (plot.Model.Series.Count > 2)
-                btnDraw.Enabled = true;
+            btnDraw.Enabled = true;
         }
     }
 }
