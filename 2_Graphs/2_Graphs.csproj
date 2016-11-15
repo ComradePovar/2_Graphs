@@ -61,7 +61,7 @@
       <DependentUpon>Graph.cs</DependentUpon>
     </Compile>
     <Compile Include="IPolynomialInterpolation.cs" />
-    <Compile Include="NewtonPolynomial.cs" />
+    <Compile Include="OLSPolynomial.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Graph.resx">

@@ -10,7 +10,7 @@ namespace _2_Graphs
     public partial class Graph : Form
     {
         private PlotModel model;
-        private NewtonPolynomial polynomial;
+        private OLSPolynomial polynomial;
         private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
         private double lowerBound = 0;
         private double upperBound = 2;
@@ -18,7 +18,7 @@ namespace _2_Graphs
         public Graph()
         {
             InitializeComponent();
-            polynomial = new NewtonPolynomial()
+            polynomial = new OLSPolynomial()
             {
                 Function = f
             };
@@ -29,7 +29,7 @@ namespace _2_Graphs
             };
             LinearAxis ax = new LinearAxis()
             {
-                FilterMinValue = 1,
+                FilterMinValue = -1,
                 FilterMaxValue = 1
             };
             //model.Axes.Add(ax);
@@ -52,6 +52,7 @@ namespace _2_Graphs
             double segmentLength = (upperBound - lowerBound) / segmentCount;
             model.Series.Clear();
             SetInterpolationPoints(segmentLength, segmentCount);
+            polynomial.SetInterpolationCoefficients();
             PlotFunctionGraphAsync(segmentLength, M);
             PlotPolynomialGraphAsync(segmentLength, M);
         }
@@ -99,7 +100,7 @@ namespace _2_Graphs
             await Task.Run(() =>
             { 
                 model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
-                    segmentLength / M, $"Многочлен Ньютона степени {polynomial.Degree}"));
+                    segmentLength / M, $"Многочлен степени {polynomial.Degree}"));
                 plot.Model = model;
                 plot.InvalidatePlot(true);
             });
