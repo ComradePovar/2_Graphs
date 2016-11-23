@@ -35,6 +35,8 @@
             this.lbM = new System.Windows.Forms.Label();
             this.lbN = new System.Windows.Forms.Label();
             this.tbN = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.grpBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,6 +55,8 @@
             // 
             // grpBox
             // 
+            this.grpBox.Controls.Add(this.label1);
+            this.grpBox.Controls.Add(this.textBox1);
             this.grpBox.Controls.Add(this.btnDraw);
             this.grpBox.Controls.Add(this.tbM);
             this.grpBox.Controls.Add(this.lbM);
@@ -108,6 +112,22 @@
             this.tbN.TabIndex = 0;
             this.tbN.Tag = "N";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(498, 17);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(29, 20);
+            this.textBox1.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(379, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Степень многочлена:";
+            // 
             // Graph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -133,6 +153,8 @@
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.TextBox tbM;
         private System.Windows.Forms.Label lbM;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

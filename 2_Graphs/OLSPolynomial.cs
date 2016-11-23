@@ -9,7 +9,7 @@ namespace _2_Graphs
         private int _degree;
         private Func<double, double> _function;
         private double[] _coefficients;
-
+        public int InterPointsCount { get; set; }
         public double[] FuncValues
         {
             get
@@ -19,8 +19,6 @@ namespace _2_Graphs
             private set
             {
                 _funcValues = value;
-                _degree = _funcValues.Length - 1;
-                _coefficients = new double[Degree + 1];
             }
         }
         public double[] InterPoints
@@ -31,15 +29,7 @@ namespace _2_Graphs
             }
             set
             {
-                _interPoints = value;
-                _degree = _interPoints.Length - 1;
-                _coefficients = new double[Degree + 1];
-                if (_function != null)
-                {
-                    FuncValues = new double[_interPoints.Length];
-                    for (int i = 0; i < _interPoints.Length; i++)
-                        FuncValues[i] = _function(_interPoints[i]);
-                }                    
+                _interPoints = value;                  
             }
         }
         public int Degree
@@ -48,7 +38,7 @@ namespace _2_Graphs
             {
                 return _degree;
             }
-            private set
+            set
             {
                 _degree = value;
             }
@@ -62,27 +52,18 @@ namespace _2_Graphs
             set
             {
                 _function = value;
-                if (InterPoints != null)
-                    for (int i = 0; i < FuncValues.Length; i++)
-                        FuncValues[i] = _function(InterPoints[i]);
             }
         }
 
         public OLSPolynomial() { }
         public void SetInterpolationCoefficients()
         {
-            if (FuncValues == null)
-            {
-                if (_degree == 0)
-                    throw new MissingMemberException("We require more vespen gas.");
-                FuncValues = new double[_degree + 1];
+
+                FuncValues = new double[InterPointsCount];
                 for (int i = 0; i < FuncValues.Length; i++)
                     FuncValues[i] = _function(InterPoints[i]);
-            }
-            if (InterPoints == null)
-                throw new MissingMemberException("We require more minerals.");
 
-
+            _coefficients = new double[Degree + 1];
             double[,] tempMatrix = new double[Degree + 1, Degree + 2];
 
             // Ai,j = SUM from i=0 to Degree (x^i * x^j)
@@ -91,7 +72,7 @@ namespace _2_Graphs
                 for (int j = 0; j <= Degree; j++)
                 {
                     double sumA = 0, sumB = 0;
-                    for (int k = 0; k <= Degree; k++)
+                    for (int k = 0; k < InterPointsCount; k++)
                     {
                         sumA += Math.Pow(InterPoints[k], i) * Math.Pow(InterPoints[k], j);
                         sumB += FuncValues[k] * Math.Pow(InterPoints[k], i);

@@ -51,7 +51,7 @@ namespace _2_Graphs
             btnDraw.Enabled = false;
             double segmentLength = (upperBound - lowerBound) / segmentCount;
             model.Series.Clear();
-            SetInterpolationPoints(segmentLength, segmentCount);
+            SetInterpolationPoints(segmentLength, segmentCount, GetValue(textBox1));
             polynomial.SetInterpolationCoefficients();
             PlotFunctionGraphAsync(segmentLength, M);
             PlotPolynomialGraphAsync(segmentLength, M);
@@ -59,15 +59,17 @@ namespace _2_Graphs
         private int GetValue(TextBox tb)
         {
             int value;
-            if (!Int32.TryParse(tb.Text, out value) || value < 1)
+            if (!Int32.TryParse(tb.Text, out value) || value < 0)
             {
                 throw new ArgumentException($"Неверное значение параметра {tb.Tag}.");
             }
             return value;
         }
-        private void SetInterpolationPoints(double segmentLength, int segmentCount)
+        private void SetInterpolationPoints(double segmentLength, int segmentCount, int degree)
         {
             double[] interPoints = new double[segmentCount + 1];
+            polynomial.InterPointsCount = segmentCount + 1;
+            polynomial.Degree = degree;
             if (segmentCount < 50)
             {
                 ScatterSeries coloredPoints = new ScatterSeries
