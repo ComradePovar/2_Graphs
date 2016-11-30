@@ -36,10 +36,10 @@ namespace _2_Graphs
         }
         private void btnDraw_Click(object sender, EventArgs e)
         {
-            int M, segmentCount;
+            int M, pointsCount;
             try
             {
-                segmentCount = GetValue(tbN);
+                pointsCount = GetValue(tbN);
                 M = GetValue(tbM);
             }
             catch (ArgumentException ex)
@@ -49,9 +49,9 @@ namespace _2_Graphs
             }
 
             btnDraw.Enabled = false;
-            double segmentLength = (upperBound - lowerBound) / segmentCount;
+            double segmentLength = (upperBound - lowerBound) / (pointsCount - 1);
             model.Series.Clear();
-            SetInterpolationPoints(segmentLength, segmentCount, GetValue(textBox1));
+            SetInterpolationPoints(segmentLength, pointsCount, GetValue(textBox1));
             polynomial.SetInterpolationCoefficients();
             PlotFunctionGraphAsync(segmentLength, M);
             PlotPolynomialGraphAsync(segmentLength, M);
@@ -65,36 +65,15 @@ namespace _2_Graphs
             }
             return value;
         }
-        private void SetInterpolationPoints(double segmentLength, int segmentCount, int degree)
+        private void SetInterpolationPoints(double segmentLength, int pointsCount, int degree)
         {
-            double[] interPoints = new double[segmentCount + 1];
-            polynomial.InterPointsCount = segmentCount + 1;
+            double[] interPoints = new double[pointsCount];
+            polynomial.InterPointsCount = pointsCount;
             polynomial.Degree = degree;
-            if (segmentCount < 50)
-            {
-                ScatterSeries coloredPoints = new ScatterSeries
-                {
-                    MarkerFill = OxyColors.DarkGreen,
-                    MarkerType = MarkerType.Circle,
-                    MarkerSize = 3,
-                    Title = "Узлы интерполяции"
-                };
 
-                for (int i = 0; i < interPoints.Length; i++)
-                {
-                    interPoints[i] = segmentLength * i - lowerBound;
-                    coloredPoints.Points.Add(new ScatterPoint(interPoints[i], f(interPoints[i])));
-                }
+            for (int i = 0; i < interPoints.Length; i++)
+                interPoints[i] = segmentLength * i - lowerBound;
 
-                model.Series.Add(coloredPoints);
-            }
-            else
-            {
-                for (int i = 0; i < interPoints.Length; i++)
-                {
-                    interPoints[i] = segmentLength * i - lowerBound;
-                }
-            }
             polynomial.InterPoints = interPoints;                
         }
         private async void PlotPolynomialGraphAsync(double segmentLength, int M)
@@ -102,7 +81,7 @@ namespace _2_Graphs
             await Task.Run(() =>
             { 
                 model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
-                    segmentLength / M, $"Многочлен степени {polynomial.Degree}"));
+                    segmentLength / M, $"Многочлен н. ср. кв. прибл. степени {polynomial.Degree}"));
                 plot.Model = model;
                 plot.InvalidatePlot(true);
             });

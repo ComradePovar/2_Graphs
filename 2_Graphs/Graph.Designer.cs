@@ -30,13 +30,13 @@
         {
             this.plot = new OxyPlot.WindowsForms.PlotView();
             this.grpBox = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbM = new System.Windows.Forms.TextBox();
             this.lbM = new System.Windows.Forms.Label();
             this.lbN = new System.Windows.Forms.Label();
             this.tbN = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.grpBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +68,22 @@
             this.grpBox.TabIndex = 1;
             this.grpBox.TabStop = false;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(379, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(124, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Степень многочлена n:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(509, 17);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(29, 20);
+            this.textBox1.TabIndex = 5;
+            // 
             // btnDraw
             // 
             this.btnDraw.Location = new System.Drawing.Point(655, 13);
@@ -98,11 +114,11 @@
             // lbN
             // 
             this.lbN.AutoSize = true;
-            this.lbN.Location = new System.Drawing.Point(6, 20);
+            this.lbN.Location = new System.Drawing.Point(53, 20);
             this.lbN.Name = "lbN";
-            this.lbN.Size = new System.Drawing.Size(158, 13);
+            this.lbN.Size = new System.Drawing.Size(111, 13);
             this.lbN.TabIndex = 1;
-            this.lbN.Text = "Число частичных отрезков N:";
+            this.lbN.Text = "Количество точек N:";
             // 
             // tbN
             // 
@@ -111,22 +127,6 @@
             this.tbN.Size = new System.Drawing.Size(59, 20);
             this.tbN.TabIndex = 0;
             this.tbN.Tag = "N";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(498, 17);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(29, 20);
-            this.textBox1.TabIndex = 5;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(379, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(115, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Степень многочлена:";
             // 
             // Graph
             // 
