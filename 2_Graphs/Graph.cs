@@ -49,7 +49,7 @@ namespace _2_Graphs
             }
 
             btnDraw.Enabled = false;
-            double segmentLength = (upperBound - lowerBound) / (pointsCount - 1);
+            double segmentLength = (upperBound - lowerBound) / pointsCount;
             model.Series.Clear();
             SetInterpolationPoints(segmentLength, pointsCount, GetValue(textBox1));
             polynomial.SetInterpolationCoefficients();
@@ -67,8 +67,8 @@ namespace _2_Graphs
         }
         private void SetInterpolationPoints(double segmentLength, int pointsCount, int degree)
         {
-            double[] interPoints = new double[pointsCount];
-            polynomial.InterPointsCount = pointsCount;
+            double[] interPoints = new double[pointsCount + 1];
+            polynomial.InterPointsCount = pointsCount + 1;
             polynomial.Degree = degree;
 
             for (int i = 0; i < interPoints.Length; i++)

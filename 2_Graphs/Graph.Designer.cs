@@ -114,11 +114,11 @@
             // lbN
             // 
             this.lbN.AutoSize = true;
-            this.lbN.Location = new System.Drawing.Point(53, 20);
+            this.lbN.Location = new System.Drawing.Point(6, 20);
             this.lbN.Name = "lbN";
-            this.lbN.Size = new System.Drawing.Size(111, 13);
+            this.lbN.Size = new System.Drawing.Size(161, 13);
             this.lbN.TabIndex = 1;
-            this.lbN.Text = "Количество точек N:";
+            this.lbN.Text = "Максимальный номер узла N:";
             // 
             // tbN
             // 
