@@ -23,12 +23,6 @@ namespace _2_Graphs
                 LegendPlacement = LegendPlacement.Outside
                 
             };
-            LinearAxis ax = new LinearAxis()
-            {
-                FilterMinValue = -1,
-                FilterMaxValue = 1
-            };
-            //model.Axes.Add(ax);
         }
         private void btnDraw_Click(object sender, EventArgs e)
         {
@@ -46,19 +40,19 @@ namespace _2_Graphs
                 return;
             }
 
+            
             btnDraw.Enabled = false;
-            double segmentLength = (upperBound - lowerBound) / (pointsCount-1);
-            model.Series.Clear();
+            double segmentLength = (upperBound - lowerBound) / (pointsCount - 1);
+            model.Series.Clear(); 
             SetInterpolationPoints(segmentLength, pointsCount);
-            if (radioButton1.Checked)
-                polynomial.BuildSplineNatural(x, y, x.Length);
-            else if (radioButton2.Checked)
-                polynomial.BuildSplineParabolic(x, y, x.Length);
-            else
-                polynomial.BuildSplineExact(x, y, x.Length);
+
+            alglib.spline1dbuildcubic(x, y, out s1);
+            alglib.spline1dbuildcubic(x, y, x.Length, 2, d2(0), 2, d2(2), out s2);
+            alglib.spline1dbuildcubic(x, y, x.Length, 2, 0, 2, 0, out s4);
+           
             PlotFunctionGraphAsync(segmentLength, M);
-            //PlotPolynomialGraphAsync(segmentLength, M);
         }
+        
         private int GetValue(TextBox tb)
         {
             int value;
@@ -78,25 +72,33 @@ namespace _2_Graphs
                 y[i] = f(x[i]);
             }            
         }
-        private async void PlotPolynomialGraphAsync(double segmentLength, int M)
-        {
-            await Task.Run(() =>
-            { 
-                model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
-                    segmentLength / M, $"Многочлен н. ср. кв. прибл. степени N"));
-                plot.Model = model;
-                plot.InvalidatePlot(true);
-            });
-
-            btnDraw.Enabled = true;
-        }
         private void PlotFunctionGraphAsync(double segmentLength, int M)
         {
-
-            model.Series.Insert(0, new FunctionSeries(f, lowerBound, upperBound,
-            segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
-            model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
-                segmentLength / M, $"Многочлен н. ср. кв. прибл. степени N"));
+            model.Series.Add(new FunctionSeries(f, lowerBound, upperBound,
+            segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}")
+            {
+                Color = OxyColors.Black
+            });
+            model.Series.Add(new FunctionSeries(interpolate1, lowerBound, upperBound,
+                segmentLength / M, $"Куб. сплайн с параболическими концевыми участками")
+            {
+                Color = OxyColors.Red
+            });
+            model.Series.Add(new FunctionSeries(interpolate2, lowerBound, upperBound,
+                segmentLength / M, $"Куб. сплайн с точными граничными условиями.")
+            {
+                Color = OxyColors.Purple
+            });
+            //model.Series.Add(new FunctionSeries(interpolate3, lowerBound, upperBound,
+            //    segmentLength / M, $"Куб. сплайн с точными граничными условиями.")
+            //{
+            //    Color = OxyColors.White
+            //});
+            model.Series.Add(new FunctionSeries(interpolate4, lowerBound, upperBound,
+                segmentLength / M, $"Естественный куб. сплайн")
+            {
+                Color = OxyColors.Yellow
+            });
             plot.Model = model;
             plot.InvalidatePlot(true);
             btnDraw.Enabled = true;

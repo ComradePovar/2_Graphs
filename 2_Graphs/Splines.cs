@@ -4,22 +4,17 @@ namespace _2_Graphs
 {
     public class CubicSpline
     {
-        SplineTuple[] splines; // Сплайн
+        SplineTuple[] splines;
         Func<double, double> d1 = x => (2 * x * (Math.Log(x * x + 1) - 1) / Math.Pow(x * x + 1, 2));
         Func<double, double> d2 = x => (-10 * x * x + (6 * x * x - 2) * Math.Log(x * x + 1) + 2) / Math.Pow(x * x + 1, 3);
-        // Структура, описывающая сплайн на каждом сегменте сетки
+
         private struct SplineTuple
         {
             public double a, b, c, d, x;
         }
-
-        // Построение сплайна
-        // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
-        // y - значения функции в узлах сетки
-        // n - количество узлов сетки
+        
         public void BuildSplineNatural(double[] x, double[] y, int n)
         {
-            // Инициализация массива сплайнов
             splines = new SplineTuple[n];
             for (int i = 0; i < n; ++i)
             {
@@ -27,9 +22,7 @@ namespace _2_Graphs
                 splines[i].a = y[i];
             }
             splines[0].c = splines[n - 1].c = 0.0;
-
-            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
-            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            
             double[] alpha = new double[n - 1];
             double[] beta = new double[n - 1];
             alpha[0] = beta[0] = 0.0;
@@ -45,14 +38,12 @@ namespace _2_Graphs
                 alpha[i] = -B / z;
                 beta[i] = (F - A * beta[i - 1]) / z;
             }
-
-            // Нахождение решения - обратный ход метода прогонки
+            
             for (int i = n - 2; i > 0; --i)
             {
                 splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
             }
-
-            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            
             for (int i = n - 1; i > 0; --i)
             {
                 double hi = x[i] - x[i - 1];
@@ -61,14 +52,8 @@ namespace _2_Graphs
             }
         }
         
-
-        // Построение сплайна
-        // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
-        // y - значения функции в узлах сетки
-        // n - количество узлов сетки
         public void BuildSplineParabolic(double[] x, double[] y, int n)
         {
-            // Инициализация массива сплайнов
             splines = new SplineTuple[n];
             for (int i = 0; i < n; ++i)
             {
@@ -77,12 +62,11 @@ namespace _2_Graphs
             }
             splines[0].c = splines[1].c = d2(0);
             splines[n - 1].c = splines[n - 2].c = d2(2);
-
-            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
-            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            
             double[] alpha = new double[n - 1];
             double[] beta = new double[n - 1];
-            alpha[0] = beta[0] = 0.0;
+            alpha[0] = d2(0);
+            beta[0] = d2(0);
             for (int i = 1; i < n - 1; ++i)
             {
                 double hi = x[i] - x[i - 1];
@@ -95,14 +79,13 @@ namespace _2_Graphs
                 alpha[i] = -B / z;
                 beta[i] = (F - A * beta[i - 1]) / z;
             }
+            
 
-            // Нахождение решения - обратный ход метода прогонки
             for (int i = n - 2; i > 0; --i)
             {
                 splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
             }
-
-            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            
             for (int i = n - 1; i > 0; --i)
             {
                 double hi = x[i] - x[i - 1];
@@ -110,13 +93,9 @@ namespace _2_Graphs
                 splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
             }
         }
-        // Построение сплайна
-        // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
-        // y - значения функции в узлах сетки
-        // n - количество узлов сетки
+
         public void BuildSplineExact(double[] x, double[] y, int n)
         {
-            // Инициализация массива сплайнов
             splines = new SplineTuple[n];
             for (int i = 0; i < n; ++i)
             {
@@ -125,9 +104,7 @@ namespace _2_Graphs
             }
             splines[0].b = d1(0);
             splines[n - 1].b = d1(2);
-
-            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
-            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            
             double[] alpha = new double[n - 1];
             double[] beta = new double[n - 1];
             alpha[0] = beta[0] = 0.0;
@@ -143,14 +120,12 @@ namespace _2_Graphs
                 alpha[i] = -B / z;
                 beta[i] = (F - A * beta[i - 1]) / z;
             }
-
-            // Нахождение решения - обратный ход метода прогонки
+            
             for (int i = n - 2; i > 0; --i)
             {
                 splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
             }
-
-            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            
             for (int i = n - 1; i > 0; --i)
             {
                 double hi = x[i] - x[i - 1];
@@ -158,27 +133,26 @@ namespace _2_Graphs
                 splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
             }
         }
-
-        // Вычисление значения интерполированной функции в произвольной точке
+        
         public double Interpolate(double x)
         {
             if (splines == null)
             {
-                return double.NaN; // Если сплайны ещё не построены - возвращаем NaN
+                return double.NaN;
             }
 
             int n = splines.Length;
             SplineTuple s;
 
-            if (x <= splines[0].x) // Если x меньше точки сетки x[0] - пользуемся первым эл-тов массива
+            if (x <= splines[0].x)
             {
                 s = splines[0];
             }
-            else if (x >= splines[n - 1].x) // Если x больше точки сетки x[n - 1] - пользуемся последним эл-том массива
+            else if (x >= splines[n - 1].x) 
             {
                 s = splines[n - 1];
             }
-            else // Иначе x лежит между граничными точками сетки - производим бинарный поиск нужного эл-та массива
+            else
             {
                 int i = 0;
                 int j = n - 1;
@@ -198,10 +172,8 @@ namespace _2_Graphs
             }
 
             double dx = x - s.x;
-            // Вычисляем значение сплайна в заданной точке по схеме Горнера (в принципе, "умный" компилятор применил бы схему Горнера сам, но ведь не все так умны, как кажутся)
 
             double result = s.a + (s.b + (s.c / 2.0 + s.d * dx / 6.0) * dx) * dx;
-            Console.Write(result + " ");
             return result;
         }
     }

@@ -175,6 +175,17 @@
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
+        alglib.spline1dinterpolant s1;
+        alglib.spline1dinterpolant s2;
+        alglib.spline1dinterpolant s3;
+        alglib.spline1dinterpolant s4;
+
+        System.Func<double, double> d1 = x => ((2 * x * (System.Math.Log(x * x + 1) - 1)) / System.Math.Pow(x * x + 1, 2));
+        System.Func<double, double> d2 = x => (-10 * x * x + (6 * x * x - 2) * System.Math.Log(x * x + 1) + 2) / System.Math.Pow(x * x + 1, 3);
+        System.Func<double, double> interpolate1 = x => alglib.spline1dcalc(s1, x);
+        System.Func<double, double> interpolate2 = x => alglib.spline1dcalc(s2, x);
+        System.Func<double, double> interpolate3 = x => alglib.spline1dcalc(s3, x);
+        System.Func<double, double> interpolate4 = x => alglib.spline1dcalc(s4, x);
     }
 }
 
