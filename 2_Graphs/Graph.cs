@@ -10,20 +10,14 @@ namespace _2_Graphs
     public partial class Graph : Form
     {
         private PlotModel model;
-        private OLSPolynomial polynomial;
-        //private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
-        //private double lowerBound = 0;
-        //private double upperBound = 2;
-        private Func<double, double> f = x => (1 + Math.Sin(Math.Pow(x, 3)) * Math.Pow(x, 4)) / (1 + Math.Pow(x, 4));
-        private double lowerBound = -3;
-        private double upperBound = 3;
+        private CubicSpline polynomial;
+        private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
+        private double lowerBound = 0;
+        private double upperBound = 2;
         public Graph()
         {
             InitializeComponent();
-            polynomial = new OLSPolynomial()
-            {
-                Function = f
-            };
+            polynomial = new CubicSpline();
             model = new PlotModel()
             {
                 LegendPlacement = LegendPlacement.Outside
@@ -43,6 +37,8 @@ namespace _2_Graphs
             {
                 pointsCount = GetValue(tbN);
                 M = GetValue(tbM);
+                x = new double[pointsCount];
+                y = new double[pointsCount];
             }
             catch (ArgumentException ex)
             {
@@ -51,12 +47,17 @@ namespace _2_Graphs
             }
 
             btnDraw.Enabled = false;
-            double segmentLength = (upperBound - lowerBound) / pointsCount;
+            double segmentLength = (upperBound - lowerBound) / (pointsCount-1);
             model.Series.Clear();
-            SetInterpolationPoints(segmentLength, pointsCount, GetValue(textBox1));
-            polynomial.SetInterpolationCoefficients();
+            SetInterpolationPoints(segmentLength, pointsCount);
+            if (radioButton1.Checked)
+                polynomial.BuildSplineNatural(x, y, x.Length);
+            else if (radioButton2.Checked)
+                polynomial.BuildSplineParabolic(x, y, x.Length);
+            else
+                polynomial.BuildSplineExact(x, y, x.Length);
             PlotFunctionGraphAsync(segmentLength, M);
-            PlotPolynomialGraphAsync(segmentLength, M);
+            //PlotPolynomialGraphAsync(segmentLength, M);
         }
         private int GetValue(TextBox tb)
         {
@@ -67,38 +68,38 @@ namespace _2_Graphs
             }
             return value;
         }
-        private void SetInterpolationPoints(double segmentLength, int pointsCount, int degree)
+        private double[] x;
+        private double[] y;
+        private void SetInterpolationPoints(double segmentLength, int pointsCount)
         {
-            double[] interPoints = new double[pointsCount + 1];
-            polynomial.InterPointsCount = pointsCount + 1;
-            polynomial.Degree = degree;
-
-            for (int i = 0; i < interPoints.Length; i++)
-                interPoints[i] = segmentLength * i + lowerBound;
-
-            polynomial.InterPoints = interPoints;                
+            for (int i = 0; i < x.Length; i++)
+            {
+                x[i] = segmentLength * i + lowerBound;
+                y[i] = f(x[i]);
+            }            
         }
         private async void PlotPolynomialGraphAsync(double segmentLength, int M)
         {
             await Task.Run(() =>
             { 
                 model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
-                    segmentLength / M, $"Многочлен н. ср. кв. прибл. степени {polynomial.Degree}"));
+                    segmentLength / M, $"Многочлен н. ср. кв. прибл. степени N"));
                 plot.Model = model;
                 plot.InvalidatePlot(true);
             });
 
             btnDraw.Enabled = true;
         }
-        private async void PlotFunctionGraphAsync(double segmentLength, int M)
+        private void PlotFunctionGraphAsync(double segmentLength, int M)
         {
-            await Task.Run(() =>
-            {
-               model.Series.Insert(0, new FunctionSeries(f, lowerBound, upperBound,
-                segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
-               plot.Model = model;
-               plot.InvalidatePlot(true);
-            });
+
+            model.Series.Insert(0, new FunctionSeries(f, lowerBound, upperBound,
+            segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}"));
+            model.Series.Add(new FunctionSeries(polynomial.Interpolate, lowerBound, upperBound,
+                segmentLength / M, $"Многочлен н. ср. кв. прибл. степени N"));
+            plot.Model = model;
+            plot.InvalidatePlot(true);
+            btnDraw.Enabled = true;
         }
     }
 }

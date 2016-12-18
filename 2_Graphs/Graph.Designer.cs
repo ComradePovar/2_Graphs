@@ -30,13 +30,14 @@
         {
             this.plot = new OxyPlot.WindowsForms.PlotView();
             this.grpBox = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbM = new System.Windows.Forms.TextBox();
             this.lbM = new System.Windows.Forms.Label();
             this.lbN = new System.Windows.Forms.Label();
             this.tbN = new System.Windows.Forms.TextBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.grpBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,8 +56,9 @@
             // 
             // grpBox
             // 
-            this.grpBox.Controls.Add(this.label1);
-            this.grpBox.Controls.Add(this.textBox1);
+            this.grpBox.Controls.Add(this.radioButton3);
+            this.grpBox.Controls.Add(this.radioButton2);
+            this.grpBox.Controls.Add(this.radioButton1);
             this.grpBox.Controls.Add(this.btnDraw);
             this.grpBox.Controls.Add(this.tbM);
             this.grpBox.Controls.Add(this.lbM);
@@ -67,22 +69,6 @@
             this.grpBox.Size = new System.Drawing.Size(771, 43);
             this.grpBox.TabIndex = 1;
             this.grpBox.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(379, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Степень многочлена n:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(509, 17);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(29, 20);
-            this.textBox1.TabIndex = 5;
             // 
             // btnDraw
             // 
@@ -128,6 +114,39 @@
             this.tbN.TabIndex = 0;
             this.tbN.Tag = "N";
             // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(379, 17);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(98, 17);
+            this.radioButton1.TabIndex = 5;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Естественный";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(461, 18);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(110, 17);
+            this.radioButton2.TabIndex = 6;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "Параболический";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(552, 17);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(144, 17);
+            this.radioButton3.TabIndex = 7;
+            this.radioButton3.TabStop = true;
+            this.radioButton3.Text = "с жестко заделанными";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            // 
             // Graph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -153,8 +172,9 @@
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.TextBox tbM;
         private System.Windows.Forms.Label lbM;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton radioButton1;
     }
 }
 

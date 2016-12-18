@@ -2,132 +2,207 @@
 
 namespace _2_Graphs
 {
-    public class OLSPolynomial : IPolynomialInterpolation
+    public class CubicSpline
     {
-        private double[] _funcValues;
-        private double[] _interPoints;
-        private int _degree;
-        private Func<double, double> _function;
-        private double[] _coefficients;
-        public int InterPointsCount { get; set; }
-        public double[] FuncValues
+        SplineTuple[] splines; // Сплайн
+        Func<double, double> d1 = x => (2 * x * (Math.Log(x * x + 1) - 1) / Math.Pow(x * x + 1, 2));
+        Func<double, double> d2 = x => (-10 * x * x + (6 * x * x - 2) * Math.Log(x * x + 1) + 2) / Math.Pow(x * x + 1, 3);
+        // Структура, описывающая сплайн на каждом сегменте сетки
+        private struct SplineTuple
         {
-            get
-            {
-                return _funcValues;
-            }
-            private set
-            {
-                _funcValues = value;
-            }
-        }
-        public double[] InterPoints
-        {
-            get
-            {
-                return _interPoints;
-            }
-            set
-            {
-                _interPoints = value;                  
-            }
-        }
-        public int Degree
-        {
-            get
-            {
-                return _degree;
-            }
-            set
-            {
-                _degree = value;
-            }
-        }
-        public Func<double, double> Function
-        {
-            get
-            {
-                return _function;
-            }
-            set
-            {
-                _function = value;
-            }
+            public double a, b, c, d, x;
         }
 
-        public OLSPolynomial() { }
-        public void SetInterpolationCoefficients()
+        // Построение сплайна
+        // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
+        // y - значения функции в узлах сетки
+        // n - количество узлов сетки
+        public void BuildSplineNatural(double[] x, double[] y, int n)
         {
-
-                FuncValues = new double[InterPointsCount];
-                for (int i = 0; i < FuncValues.Length; i++)
-                    FuncValues[i] = _function(InterPoints[i]);
-
-            _coefficients = new double[Degree + 1];
-            double[,] tempMatrix = new double[Degree + 1, Degree + 2];
-
-            // Ai,j = SUM from i=0 to Degree (x^i * x^j)
-            // Ai, n-1 = SUM from i = 0 to Degree (f(Xi) * x^i)
-            for (int i = 0; i <= Degree; i++)
-                for (int j = 0; j <= Degree; j++)
-                {
-                    double sumA = 0, sumB = 0;
-                    for (int k = 0; k < InterPointsCount; k++)
-                    {
-                        sumA += Math.Pow(InterPoints[k], i) * Math.Pow(InterPoints[k], j);
-                        sumB += FuncValues[k] * Math.Pow(InterPoints[k], i);
-                    }
-                    tempMatrix[i, j] = sumA;
-                    tempMatrix[i, Degree + 1] = sumB;
-                }
-
-            for (int i = 0; i <= Degree; i++)
+            // Инициализация массива сплайнов
+            splines = new SplineTuple[n];
+            for (int i = 0; i < n; ++i)
             {
-                for (int j = i; j <= Degree; j++)
-                {
-                    double denominator = tempMatrix[j, i];
-                    for (int k = 0; k <= Degree + 1; k++)
-                        tempMatrix[j, k] /= denominator;
-                }
+                splines[i].x = x[i];
+                splines[i].a = y[i];
+            }
+            splines[0].c = splines[n - 1].c = 0.0;
 
-                for (int j = i + 1; j < Degree + 1; j++)
-                    for (int k = i; k < Degree + 1 + 1; k++)
-                        tempMatrix[j, k] -= tempMatrix[i, k];
+            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
+            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            double[] alpha = new double[n - 1];
+            double[] beta = new double[n - 1];
+            alpha[0] = beta[0] = 0.0;
+            for (int i = 1; i < n - 1; ++i)
+            {
+                double hi = x[i] - x[i - 1];
+                double hi1 = x[i + 1] - x[i];
+                double A = hi;
+                double C = 2.0 * (hi + hi1);
+                double B = hi1;
+                double F = 6.0 * ((y[i + 1] - y[i]) / hi1 - (y[i] - y[i - 1]) / hi);
+                double z = (A * alpha[i - 1] + C);
+                alpha[i] = -B / z;
+                beta[i] = (F - A * beta[i - 1]) / z;
             }
 
-            for (int i = Degree; i > 0; i--)
-                for (int j = 0; j < i; j++)
-                {
-                    double denominator = tempMatrix[j, i];
-                    for (int k = i; k < Degree + 1 + 1; k++)
-                        tempMatrix[j, k] -= tempMatrix[i, k] * denominator;
-                }
+            // Нахождение решения - обратный ход метода прогонки
+            for (int i = n - 2; i > 0; --i)
+            {
+                splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
+            }
 
-            for (int i = 0; i <= Degree; i++)
-                _coefficients[i] = tempMatrix[i, Degree + 1];
+            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            for (int i = n - 1; i > 0; --i)
+            {
+                double hi = x[i] - x[i - 1];
+                splines[i].d = (splines[i].c - splines[i - 1].c) / hi;
+                splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
+            }
         }
+        
 
-        public void InitPolynomial(int degree, double[] x, double[] y)
+        // Построение сплайна
+        // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
+        // y - значения функции в узлах сетки
+        // n - количество узлов сетки
+        public void BuildSplineParabolic(double[] x, double[] y, int n)
         {
-            _degree = degree;
-            _interPoints = x;
-            _funcValues = y;
+            // Инициализация массива сплайнов
+            splines = new SplineTuple[n];
+            for (int i = 0; i < n; ++i)
+            {
+                splines[i].x = x[i];
+                splines[i].a = y[i];
+            }
+            splines[0].c = splines[1].c = d2(0);
+            splines[n - 1].c = splines[n - 2].c = d2(2);
+
+            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
+            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            double[] alpha = new double[n - 1];
+            double[] beta = new double[n - 1];
+            alpha[0] = beta[0] = 0.0;
+            for (int i = 1; i < n - 1; ++i)
+            {
+                double hi = x[i] - x[i - 1];
+                double hi1 = x[i + 1] - x[i];
+                double A = hi;
+                double C = 2.0 * (hi + hi1);
+                double B = hi1;
+                double F = 6.0 * ((y[i + 1] - y[i]) / hi1 - (y[i] - y[i - 1]) / hi);
+                double z = (A * alpha[i - 1] + C);
+                alpha[i] = -B / z;
+                beta[i] = (F - A * beta[i - 1]) / z;
+            }
+
+            // Нахождение решения - обратный ход метода прогонки
+            for (int i = n - 2; i > 0; --i)
+            {
+                splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
+            }
+
+            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            for (int i = n - 1; i > 0; --i)
+            {
+                double hi = x[i] - x[i - 1];
+                splines[i].d = (splines[i].c - splines[i - 1].c) / hi;
+                splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
+            }
+        }
+        // Построение сплайна
+        // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
+        // y - значения функции в узлах сетки
+        // n - количество узлов сетки
+        public void BuildSplineExact(double[] x, double[] y, int n)
+        {
+            // Инициализация массива сплайнов
+            splines = new SplineTuple[n];
+            for (int i = 0; i < n; ++i)
+            {
+                splines[i].x = x[i];
+                splines[i].a = y[i];
+            }
+            splines[0].b = d1(0);
+            splines[n - 1].b = d1(2);
+
+            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
+            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            double[] alpha = new double[n - 1];
+            double[] beta = new double[n - 1];
+            alpha[0] = beta[0] = 0.0;
+            for (int i = 1; i < n - 1; ++i)
+            {
+                double hi = x[i] - x[i - 1];
+                double hi1 = x[i + 1] - x[i];
+                double A = hi;
+                double C = 2.0 * (hi + hi1);
+                double B = hi1;
+                double F = 6.0 * ((y[i + 1] - y[i]) / hi1 - (y[i] - y[i - 1]) / hi);
+                double z = (A * alpha[i - 1] + C);
+                alpha[i] = -B / z;
+                beta[i] = (F - A * beta[i - 1]) / z;
+            }
+
+            // Нахождение решения - обратный ход метода прогонки
+            for (int i = n - 2; i > 0; --i)
+            {
+                splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
+            }
+
+            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            for (int i = n - 1; i > 0; --i)
+            {
+                double hi = x[i] - x[i - 1];
+                splines[i].d = (splines[i].c - splines[i - 1].c) / hi;
+                splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
+            }
         }
 
+        // Вычисление значения интерполированной функции в произвольной точке
         public double Interpolate(double x)
         {
-            double res = 0;
-            for (int i = 0; i <= Degree; i++)
-                res += _coefficients[i] * Math.Pow(x, i);
+            if (splines == null)
+            {
+                return double.NaN; // Если сплайны ещё не построены - возвращаем NaN
+            }
 
-            double maxValue = 3;
-            double minValue = -3;
-            if (res > maxValue)
-                return maxValue;
-            if (res < minValue)
-                return minValue;
+            int n = splines.Length;
+            SplineTuple s;
 
-            return res;
+            if (x <= splines[0].x) // Если x меньше точки сетки x[0] - пользуемся первым эл-тов массива
+            {
+                s = splines[0];
+            }
+            else if (x >= splines[n - 1].x) // Если x больше точки сетки x[n - 1] - пользуемся последним эл-том массива
+            {
+                s = splines[n - 1];
+            }
+            else // Иначе x лежит между граничными точками сетки - производим бинарный поиск нужного эл-та массива
+            {
+                int i = 0;
+                int j = n - 1;
+                while (i + 1 < j)
+                {
+                    int k = i + (j - i) / 2;
+                    if (x <= splines[k].x)
+                    {
+                        j = k;
+                    }
+                    else
+                    {
+                        i = k;
+                    }
+                }
+                s = splines[j];
+            }
+
+            double dx = x - s.x;
+            // Вычисляем значение сплайна в заданной точке по схеме Горнера (в принципе, "умный" компилятор применил бы схему Горнера сам, но ведь не все так умны, как кажутся)
+
+            double result = s.a + (s.b + (s.c / 2.0 + s.d * dx / 6.0) * dx) * dx;
+            Console.Write(result + " ");
+            return result;
         }
     }
 }
