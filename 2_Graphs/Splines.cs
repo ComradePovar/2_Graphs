@@ -52,7 +52,7 @@ namespace _2_Graphs
             }
         }
         
-        public void BuildSplineParabolic(double[] x, double[] y, int n)
+        public void BuildSplineStart(double[] x, double[] y, int n)
         {
             splines = new SplineTuple[n];
             for (int i = 0; i < n; ++i)
@@ -60,30 +60,15 @@ namespace _2_Graphs
                 splines[i].x = x[i];
                 splines[i].a = y[i];
             }
-            splines[0].c = splines[1].c = d2(0);
-            splines[n - 1].c = splines[n - 2].c = d2(2);
-            
-            double[] alpha = new double[n - 1];
-            double[] beta = new double[n - 1];
-            alpha[0] = d2(0);
-            beta[0] = d2(0);
-            for (int i = 1; i < n - 1; ++i)
+            splines[0].c = d2(x[0]);
+            splines[1].c = d2(x[1]);
+
+            for (int i = 1; i < n - 1; i++)
             {
                 double hi = x[i] - x[i - 1];
                 double hi1 = x[i + 1] - x[i];
-                double A = hi;
-                double C = 2.0 * (hi + hi1);
-                double B = hi1;
                 double F = 6.0 * ((y[i + 1] - y[i]) / hi1 - (y[i] - y[i - 1]) / hi);
-                double z = (A * alpha[i - 1] + C);
-                alpha[i] = -B / z;
-                beta[i] = (F - A * beta[i - 1]) / z;
-            }
-            
-
-            for (int i = n - 2; i > 0; --i)
-            {
-                splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
+                splines[i+1].c = (1 / hi1) * (F - hi * splines[i - 1].c - 2.0 * (hi + hi1) * splines[i].c);
             }
             
             for (int i = n - 1; i > 0; --i)
@@ -102,11 +87,13 @@ namespace _2_Graphs
                 splines[i].x = x[i];
                 splines[i].a = y[i];
             }
-            splines[0].b = d1(0);
-            splines[n - 1].b = d1(2);
+            splines[0].b = d1(x[0]);
+            splines[n - 1].b = d1(x[n - 1]);
             
             double[] alpha = new double[n - 1];
             double[] beta = new double[n - 1];
+
+
             alpha[0] = beta[0] = 0.0;
             for (int i = 1; i < n - 1; ++i)
             {
@@ -174,6 +161,10 @@ namespace _2_Graphs
             double dx = x - s.x;
 
             double result = s.a + (s.b + (s.c / 2.0 + s.d * dx / 6.0) * dx) * dx;
+            if (result > 1)
+                result = 1;
+            else if (result < -1)
+                result = -1;
             return result;
         }
     }

@@ -35,9 +35,6 @@
             this.lbM = new System.Windows.Forms.Label();
             this.lbN = new System.Windows.Forms.Label();
             this.tbN = new System.Windows.Forms.TextBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.grpBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,10 +42,9 @@
             // 
             this.plot.Dock = System.Windows.Forms.DockStyle.Top;
             this.plot.Location = new System.Drawing.Point(0, 0);
-            this.plot.MaximumSize = new System.Drawing.Size(800, 400);
             this.plot.Name = "plot";
             this.plot.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plot.Size = new System.Drawing.Size(784, 400);
+            this.plot.Size = new System.Drawing.Size(1184, 681);
             this.plot.TabIndex = 0;
             this.plot.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plot.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -56,23 +52,20 @@
             // 
             // grpBox
             // 
-            this.grpBox.Controls.Add(this.radioButton3);
-            this.grpBox.Controls.Add(this.radioButton2);
-            this.grpBox.Controls.Add(this.radioButton1);
             this.grpBox.Controls.Add(this.btnDraw);
             this.grpBox.Controls.Add(this.tbM);
             this.grpBox.Controls.Add(this.lbM);
             this.grpBox.Controls.Add(this.lbN);
             this.grpBox.Controls.Add(this.tbN);
-            this.grpBox.Location = new System.Drawing.Point(13, 406);
+            this.grpBox.Location = new System.Drawing.Point(12, 676);
             this.grpBox.Name = "grpBox";
-            this.grpBox.Size = new System.Drawing.Size(771, 43);
+            this.grpBox.Size = new System.Drawing.Size(1171, 43);
             this.grpBox.TabIndex = 1;
             this.grpBox.TabStop = false;
             // 
             // btnDraw
             // 
-            this.btnDraw.Location = new System.Drawing.Point(655, 13);
+            this.btnDraw.Location = new System.Drawing.Point(1055, 11);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(104, 26);
             this.btnDraw.TabIndex = 4;
@@ -102,56 +95,23 @@
             this.lbN.AutoSize = true;
             this.lbN.Location = new System.Drawing.Point(6, 20);
             this.lbN.Name = "lbN";
-            this.lbN.Size = new System.Drawing.Size(161, 13);
+            this.lbN.Size = new System.Drawing.Size(112, 13);
             this.lbN.TabIndex = 1;
-            this.lbN.Text = "Максимальный номер узла N:";
+            this.lbN.Text = "Количество узлов N:";
             // 
             // tbN
             // 
-            this.tbN.Location = new System.Drawing.Point(170, 17);
+            this.tbN.Location = new System.Drawing.Point(124, 17);
             this.tbN.Name = "tbN";
             this.tbN.Size = new System.Drawing.Size(59, 20);
             this.tbN.TabIndex = 0;
             this.tbN.Tag = "N";
             // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(379, 17);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(98, 17);
-            this.radioButton1.TabIndex = 5;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Естественный";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(461, 18);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(110, 17);
-            this.radioButton2.TabIndex = 6;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Параболический";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(552, 17);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(144, 17);
-            this.radioButton3.TabIndex = 7;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "с жестко заделанными";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            // 
             // Graph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 461);
+            this.ClientSize = new System.Drawing.Size(1184, 716);
             this.Controls.Add(this.grpBox);
             this.Controls.Add(this.plot);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -172,13 +132,10 @@
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.TextBox tbM;
         private System.Windows.Forms.Label lbM;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
-        alglib.spline1dinterpolant s1;
-        alglib.spline1dinterpolant s2;
-        alglib.spline1dinterpolant s3;
-        alglib.spline1dinterpolant s4;
+        static alglib.spline1dinterpolant s1;
+        static alglib.spline1dinterpolant s2;
+        static alglib.spline1dinterpolant s3;
+        static alglib.spline1dinterpolant s4;
 
         System.Func<double, double> d1 = x => ((2 * x * (System.Math.Log(x * x + 1) - 1)) / System.Math.Pow(x * x + 1, 2));
         System.Func<double, double> d2 = x => (-10 * x * x + (6 * x * x - 2) * System.Math.Log(x * x + 1) + 2) / System.Math.Pow(x * x + 1, 3);
