@@ -43,19 +43,11 @@ namespace _2_Graphs
             
             btnDraw.Enabled = false;
             double segmentLength = (upperBound - lowerBound) / (pointsCount - 1);
-            model.Series.Clear(); 
-            SetInterpolationPoints(segmentLength, pointsCount);
-            double[] d = new double[pointsCount];
-            for (int i = 0; i < pointsCount; i++)
-            {
-                d[i] = d1(i * segmentLength + lowerBound);
-            }
-            alglib.spline1dbuildcubic(x, y, out s1);
-            alglib.spline1dbuildcubic(x, y, x.Length, 2, d2(0), 2, d2(2), out s2);
-            //alglib.spline1dbuildcatmullrom(x, y, x.Length, 0, 0.1, out s3);
-            //alglib.spline1dbuildcubic(x, y, x.Length, 2, 1, 2, 1 , out s3);
-            polynomial.BuildSplineStart(x, y, x.Length);
-            alglib.spline1dbuildcubic(x, y, x.Length, 2, 0, 2, 0, out s4);
+            model.Series.Clear();
+            polynomial.BuildSplineStart(x, y, pointsCount);
+            polynomial.BuildSplineNatural(x, y, pointsCount);
+            polynomial.BuildSplineExact(x, y, pointsCount);
+            polynomial.BuildSplineParab(x, y, pointsCount);
            
             PlotFunctionGraphAsync(segmentLength, M);
         }
@@ -71,16 +63,10 @@ namespace _2_Graphs
         }
         private double[] x;
         private double[] y;
-        private void SetInterpolationPoints(double segmentLength, int pointsCount)
-        {
-            for (int i = 0; i < x.Length; i++)
-            {
-                x[i] = segmentLength * i + lowerBound;
-                y[i] = f(x[i]);
-            }            
-        }
+
         private void PlotFunctionGraphAsync(double segmentLength, int M)
         {
+            SetInterpolationPoints(segmentLength, GetValue(tbN));
             model.Series.Add(new FunctionSeries(f, lowerBound, upperBound,
             segmentLength / M, $"ln(1 + x^2)/(1+x^2) c параметром M={M}")
             {
@@ -109,6 +95,19 @@ namespace _2_Graphs
             plot.Model = model;
             plot.InvalidatePlot(true);
             btnDraw.Enabled = true;
+        }
+        private void SetInterpolationPoints(double segmentLength, int pointsCount)
+        {
+            for (int i = 0; i < x.Length; i++)
+            {
+                x[i] = segmentLength * i + lowerBound;
+                y[i] = f(x[i]);
+            }
+
+            alglib.spline1dbuildcubic(x, y, out s1);
+            alglib.spline1dbuildcubic(x, y, x.Length, 2, d2(0), 2, d2(2), out s2);
+            polynomial.BuildSplineStart(x, y, x.Length);
+            alglib.spline1dbuildcubic(x, y, x.Length, 2, 0, 2, 0, out s4);
         }
     }
 }
