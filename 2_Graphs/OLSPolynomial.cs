@@ -8,7 +8,7 @@ namespace _2_Graphs
         private double[] _interPoints;
         private int _degree;
         private Func<double, double> _function;
-        private double[] _coefficients;
+        public double[] _coefficients;
         public int InterPointsCount { get; set; }
         public double[] FuncValues
         {

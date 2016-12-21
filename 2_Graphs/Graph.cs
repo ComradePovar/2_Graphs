@@ -11,12 +11,12 @@ namespace _2_Graphs
     {
         private PlotModel model;
         private OLSPolynomial polynomial;
-        //private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
-        //private double lowerBound = 0;
-        //private double upperBound = 2;
-        private Func<double, double> f = x => (1 + Math.Sin(Math.Pow(x, 3)) * Math.Pow(x, 4)) / (1 + Math.Pow(x, 4));
-        private double lowerBound = -3;
-        private double upperBound = 3;
+        private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
+        private double lowerBound = 0;
+        private double upperBound = 2;
+        //private Func<double, double> f = x => (1 + Math.Sin(Math.Pow(x, 3)) * Math.Pow(x, 4)) / (1 + Math.Pow(x, 4));
+        //private double lowerBound = -3;
+        //private double upperBound = 3;
         public Graph()
         {
             InitializeComponent();
@@ -55,6 +55,11 @@ namespace _2_Graphs
             model.Series.Clear();
             SetInterpolationPoints(segmentLength, pointsCount, GetValue(textBox1));
             polynomial.SetInterpolationCoefficients();
+            Console.Clear();
+            for (int i = 0; i < polynomial._coefficients.Length; i++)
+            {
+                Console.WriteLine("c[" + i + "] = " + polynomial._coefficients[i]);
+            }
             PlotFunctionGraphAsync(segmentLength, M);
             PlotPolynomialGraphAsync(segmentLength, M);
         }
