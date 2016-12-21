@@ -143,6 +143,13 @@
         System.Func<double, double> interpolate2 = x => alglib.spline1dcalc(s2, x);
         System.Func<double, double> interpolate3 = x => alglib.spline1dcalc(s3, x);
         System.Func<double, double> interpolate4 = x => alglib.spline1dcalc(s4, x);
+        private void BuildSplines()
+        {
+            alglib.spline1dbuildcubic(x, y, out s1);
+            alglib.spline1dbuildcubic(x, y, x.Length, 2, d2(0), 2, d2(2), out s2);
+            polynomial.BuildSplineStart(x, y, x.Length);
+            alglib.spline1dbuildcubic(x, y, x.Length, 2, 0, 2, 0, out s4);
+        }
     }
 }
 

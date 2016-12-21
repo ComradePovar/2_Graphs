@@ -104,10 +104,7 @@ namespace _2_Graphs
                 y[i] = f(x[i]);
             }
 
-            alglib.spline1dbuildcubic(x, y, out s1);
-            alglib.spline1dbuildcubic(x, y, x.Length, 2, d2(0), 2, d2(2), out s2);
-            polynomial.BuildSplineStart(x, y, x.Length);
-            alglib.spline1dbuildcubic(x, y, x.Length, 2, 0, 2, 0, out s4);
+            BuildSplines();
         }
     }
 }
