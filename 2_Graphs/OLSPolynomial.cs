@@ -120,12 +120,12 @@ namespace _2_Graphs
             for (int i = 0; i <= Degree; i++)
                 res += _coefficients[i] * Math.Pow(x, i);
 
-            double maxValue = 3;
-            double minValue = -3;
-            if (res > maxValue)
-                return maxValue;
-            if (res < minValue)
-                return minValue;
+            //double maxValue = 3;
+            //double minValue = -3;
+            //if (res > maxValue)
+            //    return maxValue;
+            //if (res < minValue)
+            //    return minValue;
 
             return res;
         }

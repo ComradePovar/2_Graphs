@@ -11,12 +11,15 @@ namespace _2_Graphs
     {
         private PlotModel model;
         private OLSPolynomial polynomial;
-        private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
-        private double lowerBound = 0;
-        private double upperBound = 2;
+        //private Func<double, double> f = x => Math.Log(1 + x * x) / (1 + x * x);
+        //private double lowerBound = 0;
+        //private double upperBound = 2;
         //private Func<double, double> f = x => (1 + Math.Sin(Math.Pow(x, 3)) * Math.Pow(x, 4)) / (1 + Math.Pow(x, 4));
         //private double lowerBound = -3;
         //private double upperBound = 3;
+        private Func<double, double> f = x => (1 / (1 + 25 * x * x));
+        private double lowerBound = -1;
+        private double upperBound = 1;
         public Graph()
         {
             InitializeComponent();
