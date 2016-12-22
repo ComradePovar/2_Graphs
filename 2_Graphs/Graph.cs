@@ -78,7 +78,7 @@ namespace _2_Graphs
                 Color = OxyColors.Red
             });
             model.Series.Add(new FunctionSeries(interpolate2, lowerBound, upperBound,
-                segmentLength / M, $"Куб. сплайн с точными граничными условиями")
+                segmentLength / M, $"Куб. сплайн с жёстко заделанными концами")
             {
                 Color = OxyColors.Purple
             });
